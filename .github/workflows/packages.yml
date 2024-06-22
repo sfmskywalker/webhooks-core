@@ -1,0 +1,113 @@
+name: webhooks-core 3 Packages
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+      - 'patch/*'
+      - 'feat/*'
+      - 'bug/*'
+      - 'enh/*'
+      - 'perf/*'
+      - 'chore/*'
+  release:
+    types: [ prereleased, published ]
+env:
+  base_version: '0.0.1'
+  feedz_feed_source: 'https://f.feedz.io/personal/webhooks-core/nuget/index.json'
+  nuget_feed_source: 'https://api.nuget.org/v3/index.json'
+
+jobs:
+  build:
+    name: Build packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Extract branch name
+        run: |
+          BRANCH_NAME=${{ github.ref }} # e.g., refs/heads/main
+          BRANCH_NAME=${BRANCH_NAME#refs/heads/} # remove the refs/heads/ prefix
+          # Extract the last part after the last slash of the branch name, if any, e.g., feature/issue-123 -> issue-123 and use it as the version prefix.
+          PACKAGE_PREFIX=$(echo $BRANCH_NAME | rev | cut -d/ -f1 | rev | tr '_' '-')
+          
+          # If the branch name is main, use the preview version. Otherwise, use the branch name as the version prefix.
+          if [[ "${BRANCH_NAME}" == "main" ]]; then
+              PACKAGE_PREFIX="preview"
+          fi
+          
+          echo "Ref: ${{ github.ref }}"
+          echo "Branch name: ${BRANCH_NAME}"
+          echo "Package prefix: ${PACKAGE_PREFIX}"
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "PACKAGE_PREFIX=${PACKAGE_PREFIX}" >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Verify commit exists in branch
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* && "${{ github.event_name }}" == "release" && "${{ github.event.action }}" == "published" ]]; then
+            git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+            git branch --remote --contains | grep main
+          else
+            git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+            git branch --remote --contains | grep origin/${BRANCH_NAME}
+          fi
+      - name: Set VERSION variable
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* && "${{ github.event_name }}" == "release" && "${{ github.event.action }}" == "published" ]]; then
+            TAG_NAME=${{ github.ref }} # e.g., refs/tags/3.0.0
+            TAG_NAME=${TAG_NAME#refs/tags/} # remove the refs/tags/ prefix
+            echo "VERSION=${TAG_NAME}" >> $GITHUB_ENV
+          else
+            echo "VERSION=${{env.base_version}}-${PACKAGE_PREFIX}.${{github.run_number}}" >> $GITHUB_ENV
+          fi
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: webhooks-core-nuget-packages
+          path: packages/*nupkg
+        if: ${{ github.event_name == 'release' || github.event_name == 'push'}}
+  
+  publish_preview_feedz:
+    name: Publish to feedz.io
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ github.event_name == 'release' || github.event_name == 'push'}}
+    steps:
+      - name: Download Packages
+        uses: actions/download-artifact@v3
+        with:
+          name: webhooks-core-nuget-packages
+
+      - name: Publish to feedz.io
+        run: dotnet nuget push *.nupkg -k ${{ secrets.FEEDZ_API_KEY }} -s ${{ env.feedz_feed_source }} --skip-duplicate
+
+  publish_preview_nuget:
+    name: Publish preview to nuget.org
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ github.event_name == 'prereleased' && github.event.action == 'published' }}
+    steps:
+      - name: Download Packages
+        uses: actions/download-artifact@v3
+        with:
+          name: webhooks-core-nuget-packages
+
+      - name: Publish to nuget.org
+        run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ env.nuget_feed_source }} --skip-duplicate
+
+  publish_nuget:
+    name: Publish release to nuget.org
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+    steps:
+      - name: Download Packages
+        uses: actions/download-artifact@v3
+        with:
+          name: webhooks-core-nuget-packages
+
+      - name: Publish to nuget.org
+        run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ env.nuget_feed_source }} --skip-duplicate
