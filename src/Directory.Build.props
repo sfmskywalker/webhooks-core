@@ -1,0 +1,30 @@
+<Project>
+    <PropertyGroup>
+        <Authors>sfmskywalker</Authors>
+        <Copyright>2024</Copyright>
+
+        <PackageProjectUrl>https://github.com/sfmskywalker/webhooks-core</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/sfmskywalker/webhooks-core</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AnalysisModeDocumentation>Default</AnalysisModeDocumentation>
+        <AnalysisLevelDocumentation>latest</AnalysisLevelDocumentation>
+
+        <!-- https://github.com/dotnet/sourcelink -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <NoWarn>$(NoWarn);CS0162;CS1591</NoWarn>
+    </PropertyGroup>
+
+</Project>

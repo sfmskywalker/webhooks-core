@@ -1,0 +1,6 @@
+@WebhooksEventReceiver.Web_HostAddress = http://localhost:5189
+
+GET {{WebhooksEventReceiver.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
