@@ -1,4 +1,3 @@
-using WebhookEvents;
 using WebhooksCore;
 
 namespace WebhookEvents.Generator.Web.HostedServices;
@@ -7,11 +6,11 @@ namespace WebhookEvents.Generator.Web.HostedServices;
 public class EventGenerator(IWebhookEventBroadcaster webhookEventBroadcaster, TimeProvider timeProvider) : BackgroundService
 {
     private readonly TimeSpan _interval = TimeSpan.FromSeconds(5);
-    
+
     // ReSharper disable once NotAccessedField.Local
     // Keep this to ensure the Timer object doesn't get collected by the GC.
     private Timer _timer = default!;
-    
+
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _timer = new Timer(OnTimerTick, null, _interval, _interval);
@@ -22,7 +21,6 @@ public class EventGenerator(IWebhookEventBroadcaster webhookEventBroadcaster, Ti
     {
         var now = timeProvider.GetUtcNow();
         var payload = new Heartbeat(now);
-        await webhookEventBroadcaster.BroadcastAsync(new WebhookEvent("Heartbeat", payload, now));
+        await webhookEventBroadcaster.BroadcastAsync("Heartbeat", payload);
     }
 }
-

@@ -11,7 +11,7 @@ public class DefaultWebhookEventBroadcaster(
     IBroadcasterStrategy strategy,
     ILogger<DefaultWebhookEventBroadcaster> logger) : IWebhookEventBroadcaster
 {
-    public async Task BroadcastAsync(WebhookEvent webhookEvent, CancellationToken cancellationToken = default)
+    public async Task BroadcastAsync(NewWebhookEvent webhookEvent, CancellationToken cancellationToken = default)
     {
         var endpoints = (await webhookEndpointsSource.ListWebhooksForEventAsync(webhookEvent.EventType, cancellationToken)).ToList();
 
@@ -21,7 +21,7 @@ public class DefaultWebhookEventBroadcaster(
         async Task InvokeEndpointAsync(WebhookEndpoint endpoint) => await SendWebhookEventAsync(webhookEvent, endpoint, cancellationToken);
     }
 
-    private async Task SendWebhookEventAsync(WebhookEvent webhookEvent, WebhookEndpoint endpoint, CancellationToken cancellationToken)
+    private async Task SendWebhookEventAsync(NewWebhookEvent webhookEvent, WebhookEndpoint endpoint, CancellationToken cancellationToken)
     {
         try
         {

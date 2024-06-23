@@ -1,5 +1,3 @@
-using WebhooksCore.Services;
-
 namespace WebhooksCore.Strategies;
 
 public class BackgroundProcessorBroadcasterStrategy(IBackgroundTaskScheduler scheduler) : IBroadcasterStrategy

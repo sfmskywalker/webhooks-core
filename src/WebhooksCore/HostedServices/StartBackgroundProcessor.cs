@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using WebhooksCore.Services;
 
 namespace WebhooksCore.HostedServices;
 

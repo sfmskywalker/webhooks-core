@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IWebhookEventBroadcaster, DefaultWebhookEventBroadcaster>()
             .AddSingleton<IWebhookEndpointsSource, ConfigurationWebhookEndpointsSource>()
             .AddSingleton<IWebhookEndpointInvoker, HttpWebhookEndpointInvoker>()
+            .AddSingleton<ISystemClock, DefaultSystemClock>()
             .AddSingleton(CreateBroadcasterStrategy);
     }
 
