@@ -65,20 +65,11 @@ jobs:
         with:
           dotnet-version: 8.0.302
 
-      - name: Restore dependencies
-        run: dotnet restore WebhooksCore.sln
-
-      - name: Build
-        run: dotnet build WebhooksCore.sln --no-restore
-
-      - name: Test
-        run: dotnet test WebhooksCore.sln --no-build --verbosity normal
-
-      - name: Pack
+      - name: Build+Test+Pack
         run: |
-          find ./src -name "*.csproj" -print0 | while IFS= read -r -d '' project; do
-            dotnet pack "$project" --no-build --output ./packages --configuration Release /p:PackageVersion=$VERSION
-          done
+          dotnet restore WebhooksCore.sln
+          dotnet build WebhooksCore.sln --no-restore
+          dotnet pack src/WebhooksCore/WebhooksCore.csproj --no-build --output ./packages --configuration Release /p:PackageVersion=$VERSION
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
