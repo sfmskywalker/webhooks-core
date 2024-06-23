@@ -69,7 +69,8 @@ jobs:
         run: |
           dotnet restore WebhooksCore.sln
           dotnet build WebhooksCore.sln --no-restore
-          dotnet pack src/WebhooksCore/WebhooksCore.csproj --no-build --output ./packages --configuration Release /p:PackageVersion=$VERSION
+          dotnet test WebhooksCore.sln --no-restore
+          dotnet pack src/WebhooksCore/WebhooksCore.csproj --output ./packages --configuration Release /p:PackageVersion=$VERSION
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
