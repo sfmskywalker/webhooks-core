@@ -1,3 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+    <PropertyGroup>
+        <Description>
+            Provides shared models between webhooks sender and receiver apps.
+        </Description>
+        <PackageTags>webhooks</PackageTags>
+    </PropertyGroup>
 </Project>
