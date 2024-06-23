@@ -76,7 +76,9 @@ jobs:
 
       - name: Pack
         run: |
-          dotnet pack WebhooksCore.sln --no-build --output ./packages --configuration Release /p:PackageVersion=$VERSION
+          find ./src -name "*.csproj" -print0 | while IFS= read -r -d '' project; do
+            dotnet pack "$project" --no-build --output ./packages --configuration Release /p:PackageVersion=$VERSION
+          done
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
