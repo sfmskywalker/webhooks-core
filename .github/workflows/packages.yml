@@ -1,4 +1,4 @@
-name: webhooks-core 3 Packages
+name: Webhooks Core Packages
 on:
   workflow_dispatch:
   push:
@@ -60,6 +60,23 @@ jobs:
           else
             echo "VERSION=${{env.base_version}}-${PACKAGE_PREFIX}.${{github.run_number}}" >> $GITHUB_ENV
           fi
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.0.6
+
+      - name: Restore dependencies
+        run: dotnet restore WebhooksCore.sln
+
+      - name: Build
+        run: dotnet build WebhooksCore.sln --no-restore
+
+      - name: Test
+        run: dotnet test WebhooksCore.sln --no-build --verbosity normal
+
+      - name: Pack
+        run: |
+          dotnet pack WebhooksCore.sln --no-build --output ./packages --configuration Release /p:PackageVersion=$VERSION
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:

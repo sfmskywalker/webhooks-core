@@ -16,6 +16,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhooksCore", "src\WebhooksCore\WebhooksCore.csproj", "{D8E80770-F6EF-48B2-B4C1-DF3BC00D6E1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{98A2083A-9DD1-420C-92DC-F5B827FD01A1}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Directory.Build.props = samples\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookEvents.Generator.Web", "samples\WebhookEvents.Generator.Web\WebhookEvents.Generator.Web.csproj", "{AB63FA3A-DCCE-4B25-9E3E-2EB673A9E9C5}"
 EndProject
