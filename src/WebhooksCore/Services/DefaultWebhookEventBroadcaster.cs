@@ -6,30 +6,30 @@ namespace WebhooksCore.Services;
 /// A webhook event broadcaster that sends HTTP requests one by one.
 /// </summary>
 public class DefaultWebhookEventBroadcaster(
-    IWebhookEndpointsSource webhookEndpointsSource, 
+    IWebhookSinkProvider webhookSinkProvider, 
     IWebhookEndpointInvoker webhookEndpointInvoker,
     IBroadcasterStrategy strategy,
     ILogger<DefaultWebhookEventBroadcaster> logger) : IWebhookEventBroadcaster
 {
     public async Task BroadcastAsync(NewWebhookEvent webhookEvent, CancellationToken cancellationToken = default)
     {
-        var endpoints = (await webhookEndpointsSource.ListWebhooksForEventAsync(webhookEvent.EventType, cancellationToken)).ToList();
+        var endpoints = (await webhookSinkProvider.ListWebhooksForEventAsync(webhookEvent.EventType, cancellationToken)).ToList();
 
         await strategy.BroadcastAsync(endpoints, InvokeEndpointAsync, cancellationToken);
         return;
         
-        async Task InvokeEndpointAsync(WebhookEndpoint endpoint) => await SendWebhookEventAsync(webhookEvent, endpoint, cancellationToken);
+        async Task InvokeEndpointAsync(WebhookSink endpoint) => await SendWebhookEventAsync(webhookEvent, endpoint, cancellationToken);
     }
 
-    private async Task SendWebhookEventAsync(NewWebhookEvent webhookEvent, WebhookEndpoint endpoint, CancellationToken cancellationToken)
+    private async Task SendWebhookEventAsync(NewWebhookEvent webhookEvent, WebhookSink sink, CancellationToken cancellationToken)
     {
         try
         {
-            await webhookEndpointInvoker.InvokeAsync(endpoint, webhookEvent, cancellationToken);
+            await webhookEndpointInvoker.InvokeAsync(sink, webhookEvent, cancellationToken);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error while sending webhook event {EventType} to {Url}.", webhookEvent.EventType, endpoint.Url);
+            logger.LogError(e, "Error while sending webhook event {EventType} to {Url}.", webhookEvent.EventType, sink.Url);
         }
     }
 }

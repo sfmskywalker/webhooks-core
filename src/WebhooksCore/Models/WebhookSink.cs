@@ -1,13 +1,13 @@
 namespace WebhooksCore;
 
-/// Represents a webhook endpoint that is interested in a given set of events. 
-public class WebhookEndpoint
+/// Represents a webhook events sink interested in a given set of events. 
+public class WebhookSink
 {
-    /// A unique identifier for this endpoint.
+    /// A unique identifier for this sink.
     public string Id { get; set; } = default!;
 
     /// A friendly name for this endpoint.
-    public string Name { get; set; } = default!;
+    public string? Name { get; set; }
 
     /// The URL to send the webhook event to.
     public Uri Url { get; set; } = default!;

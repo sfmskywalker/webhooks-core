@@ -3,7 +3,8 @@ using Microsoft.Extensions.Options;
 using WebhooksCore.HostedServices;
 using WebhooksCore.Options;
 using WebhooksCore.Services;
-using WebhooksCore.Sources;
+using WebhooksCore.SinkProviders;
+using WebhooksCore.SourceProviders;
 
 namespace WebhooksCore;
 
@@ -11,14 +12,16 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddWebhooksCore(this IServiceCollection services)
     {
-        services.AddOptions<WebhookEndpointsOptions>();
+        services.AddOptions<WebhookSinksOptions>();
+        services.AddOptions<WebhookSourcesOptions>();
         services.AddOptions<BackgroundTaskProcessorOptions>();
         services.AddOptions<WebhookEventBroadcasterOptions>();
 
         return services
             .AddHttpClient()
             .AddSingleton<IWebhookEventBroadcaster, DefaultWebhookEventBroadcaster>()
-            .AddSingleton<IWebhookEndpointsSource, ConfigurationWebhookEndpointsSource>()
+            .AddSingleton<IWebhookSinkProvider, OptionsWebhookSinkProvider>()
+            .AddSingleton<IWebhookSourceProvider, OptionsWebhookSourceProvider>()
             .AddSingleton<IWebhookEndpointInvoker, HttpWebhookEndpointInvoker>()
             .AddSingleton<IBackgroundTaskProcessor, ChannelBackgroundTaskProcessor>()
             .AddSingleton<IBackgroundTaskScheduler, ChannelBackgroundTaskScheduler>()

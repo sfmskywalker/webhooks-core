@@ -6,14 +6,14 @@ namespace WebhooksCore.Services;
 
 public class HttpWebhookEndpointInvoker(IHttpClientFactory httpClientFactory, ISystemClock systemClock) : IWebhookEndpointInvoker
 {
-    public async Task InvokeAsync(WebhookEndpoint webhookEndpoint, NewWebhookEvent newWebhookEvent, CancellationToken cancellationToken = default)
+    public async Task InvokeAsync(WebhookSink webhookSink, NewWebhookEvent newWebhookEvent, CancellationToken cancellationToken = default)
     {
         var httpClient = httpClientFactory.CreateClient();
         var retryPolicy = GetRetryPolicy();
         var webhookEvent = new WebhookEvent(newWebhookEvent.EventType, newWebhookEvent.Payload, systemClock.UtcNow);
 
         var response = await retryPolicy.ExecuteAsync(
-            async () => await httpClient.PostAsJsonAsync(webhookEndpoint.Url, webhookEvent, cancellationToken));
+            async () => await httpClient.PostAsJsonAsync(webhookSink.Url, webhookEvent, cancellationToken));
 
         response.EnsureSuccessStatusCode();
     }
