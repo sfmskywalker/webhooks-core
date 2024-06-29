@@ -1,5 +1,5 @@
 using WebhookEvents.Generator.Web.HostedServices;
-using WebhooksCore.Extensions;
+using WebhooksCore;
 using WebhooksCore.Options;
 using WebhooksCore.Strategies;
 
@@ -15,7 +15,7 @@ services
     ;
 
 services.Configure<WebhookEndpointsOptions>(options => configuration.GetSection("Webhooks").Bind(options));
-services.Configure<WebhookEventBroadcasterOptions>(options => options.BroadcasterStrategy = typeof(BackgroundProcessorBroadcasterStrategy));
+services.Configure<WebhookEventBroadcasterOptions>(options => options.UseBackgroundProcessorBroadcasterStrategy());
 var app = builder.Build();
 
 app.UseHttpsRedirection();
