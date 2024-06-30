@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Logging;
+
 namespace WebhooksCore.Services;
 
-public class ChannelBackgroundTaskProcessor(IBackgroundTaskChannel channel) : IBackgroundTaskProcessor
+public class ChannelBackgroundTaskProcessor(IBackgroundTaskChannel channel, ILogger<ChannelBackgroundTaskProcessor> logger) : IBackgroundTaskProcessor
 {
     private const int InitialWorkerCount = 5;
     private readonly List<Task> _tasks = new();
@@ -36,9 +38,16 @@ public class ChannelBackgroundTaskProcessor(IBackgroundTaskChannel channel) : IB
     {
         _tasks.Add(Task.Run(async () =>
         {
-            await foreach (var workItem in channel.Reader.ReadAllAsync(_cts.Token).ConfigureAwait(false))
+            try
             {
-                await workItem();
+                await foreach (var workItem in channel.Reader.ReadAllAsync(_cts.Token).ConfigureAwait(false))
+                {
+                    await workItem();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                logger.LogInformation("Worker stopped");
             }
         }));
     }

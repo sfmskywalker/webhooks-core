@@ -13,5 +13,5 @@ public class WebhookSink
     public Uri Url { get; set; } = default!;
 
     /// A whitelist of event types to deliver.
-    public HashSet<string> EventTypes { get; set; } = new();
+    public ICollection<WebhookEventFilter> Filters { get; set; } = new List<WebhookEventFilter>();
 }

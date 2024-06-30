@@ -2,7 +2,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace WebhooksCore.HostedServices;
 
-public class StartBackgroundProcessor(IBackgroundTaskProcessor backgroundTaskProcessor, IBackgroundTaskScheduler backgroundTaskScheduler, IBackgroundTaskChannel backgroundTaskChannel) : IHostedService
+public class StartBackgroundProcessor(IBackgroundTaskProcessor backgroundTaskProcessor, IBackgroundTaskChannel backgroundTaskChannel) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
