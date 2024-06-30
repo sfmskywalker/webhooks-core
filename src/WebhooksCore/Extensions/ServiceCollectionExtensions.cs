@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using WebhooksCore.HostedServices;
 using WebhooksCore.Options;
+using WebhooksCore.Serialization.Converters;
 using WebhooksCore.Services;
 using WebhooksCore.SinkProviders;
 using WebhooksCore.SourceProviders;
@@ -12,6 +14,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddWebhooksCore(this IServiceCollection services)
     {
+        TypeDescriptor.AddAttributes(typeof(Type), new TypeConverterAttribute(typeof(TypeTypeConverter)));
+        
         services.AddOptions<WebhookSinksOptions>();
         services.AddOptions<WebhookSourcesOptions>();
         services.AddOptions<BackgroundTaskProcessorOptions>();
