@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddOptions<WebhookSinksOptions>();
         services.AddOptions<WebhookSourcesOptions>();
         services.AddOptions<BackgroundTaskProcessorOptions>();
-        services.AddOptions<WebhookEventBroadcasterOptions>();
+        services.AddOptions<WebhookBroadcasterOptions>();
 
         return services
             .AddHttpClient()
@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
 
     private static IBroadcasterStrategy CreateBroadcasterStrategy(IServiceProvider serviceProvider)
     {
-        var options = serviceProvider.GetRequiredService<IOptions<WebhookEventBroadcasterOptions>>();
+        var options = serviceProvider.GetRequiredService<IOptions<WebhookBroadcasterOptions>>();
         var type = options.Value.BroadcasterStrategy;
         var broadcasterStrategy = (IBroadcasterStrategy)ActivatorUtilities.CreateInstance(serviceProvider, type);
         return broadcasterStrategy;

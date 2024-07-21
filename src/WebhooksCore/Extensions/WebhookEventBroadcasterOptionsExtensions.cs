@@ -5,13 +5,13 @@ namespace WebhooksCore;
 
 public static class WebhookEventBroadcasterOptionsExtensions
 {
-    public static WebhookEventBroadcasterOptions UseStrategy<T>(this WebhookEventBroadcasterOptions options) where T : IBroadcasterStrategy
+    public static WebhookBroadcasterOptions UseStrategy<T>(this WebhookBroadcasterOptions options) where T : IBroadcasterStrategy
     {
         options.BroadcasterStrategy = typeof(T);
         return options;
     }
     
-    public static WebhookEventBroadcasterOptions UseStrategy(this WebhookEventBroadcasterOptions options, Type strategyType)
+    public static WebhookBroadcasterOptions UseStrategy(this WebhookBroadcasterOptions options, Type strategyType)
     {
         if(!strategyType.IsAssignableTo(typeof(IBroadcasterStrategy)))
             throw new ArgumentException($"{nameof(strategyType)} must be assignable from {nameof(IBroadcasterStrategy)}");
@@ -20,7 +20,7 @@ public static class WebhookEventBroadcasterOptionsExtensions
         return options;
     }
 
-    public static WebhookEventBroadcasterOptions UseSequentialBroadcasterStrategy(this WebhookEventBroadcasterOptions options) => options.UseStrategy<SequentialBroadcasterStrategy>();
-    public static WebhookEventBroadcasterOptions UseParallelTaskBroadcasterStrategy(this WebhookEventBroadcasterOptions options) => options.UseStrategy<ParallelTaskBroadcasterStrategy>();
-    public static WebhookEventBroadcasterOptions UseBackgroundProcessorBroadcasterStrategy(this WebhookEventBroadcasterOptions options) => options.UseStrategy<BackgroundProcessorBroadcasterStrategy>();
+    public static WebhookBroadcasterOptions UseSequentialBroadcasterStrategy(this WebhookBroadcasterOptions options) => options.UseStrategy<SequentialBroadcasterStrategy>();
+    public static WebhookBroadcasterOptions UseParallelTaskBroadcasterStrategy(this WebhookBroadcasterOptions options) => options.UseStrategy<ParallelTaskBroadcasterStrategy>();
+    public static WebhookBroadcasterOptions UseBackgroundProcessorBroadcasterStrategy(this WebhookBroadcasterOptions options) => options.UseStrategy<BackgroundProcessorBroadcasterStrategy>();
 }
