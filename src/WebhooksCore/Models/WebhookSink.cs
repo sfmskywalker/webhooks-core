@@ -1,6 +1,9 @@
+using JetBrains.Annotations;
+
 namespace WebhooksCore;
 
 /// Represents a webhook events sink interested in a given set of events. 
+[UsedImplicitly]
 public class WebhookSink
 {
     /// A unique identifier for this sink.
