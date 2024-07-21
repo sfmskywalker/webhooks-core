@@ -5,7 +5,7 @@ Webhooks Core is a .NET library that allows your applications to easily broadcas
 
 * Register external applications to receive webhook events.
 * Broadcast any custom event to registered applications.
-* Configure multiple webhook endpoints.
+* Configure multiple webhook endpoints called _sinks_.
 
 ## Getting Started
 
@@ -14,7 +14,7 @@ Here a simple JSON configuration for registering webhook endpoints:
 ```json
 {
   "Webhooks": {
-    "Endpoints": [
+    "Sinks": [
       {
         "Id": "ExternalApplication1",
         "Name": "External Application 1",
@@ -44,7 +44,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddWebhooksCore();
 
-services.Configure<WebhookEndpointsOptions>(options => configuration.GetSection("Webhooks").Bind(options));
+services.Configure<WebhookSinksOptions>(options => configuration.GetSection("Sinks").Bind(options));
 ```
 
 Broadcast a webhook event:
@@ -80,6 +80,21 @@ Alternatively, you can use the following types:
 
 Or any other type that can be deserialized from the received payload data.
 If no type is specified, the default will be a `JsonElement`.
+
+## Glossary
+
+Certainly! Here's the improved wording/description:
+
+```markdown
+| Term   | Description                                                                                                                                                                                                                      |
+|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Sink   | The endpoint that receives an event. In the context of webhooks, this refers to an HTTP endpoint that receives HTTP requests representing the webhook event.                                                                      |
+| Source | The origin of an event. In the context of webhooks, this is the application that broadcasts an event. The webhook dispatcher then sends HTTP requests to all registered sinks.                                                   |
+|        |                                                                                                                                                                                                                                  |
+|        |                                                                                                                                                                                                                                  |
+```
+
+Let me know if you need further modifications or additional terms included.
 
 ## Contributing
 

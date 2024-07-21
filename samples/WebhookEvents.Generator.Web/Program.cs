@@ -14,7 +14,7 @@ services
     .AddHostedService<EventGenerator>()
     ;
 
-services.Configure<WebhookSinksOptions>(options => configuration.GetSection("Webhooks").Bind(options));
+services.Configure<WebhookSinksOptions>(options => configuration.GetSection("Sinks").Bind(options));
 services.Configure<WebhookBroadcasterOptions>(options => options.UseBackgroundProcessorBroadcasterStrategy());
 var app = builder.Build();
 
