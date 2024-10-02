@@ -83,8 +83,6 @@ If no type is specified, the default will be a `JsonElement`.
 
 ## Glossary
 
-Certainly! Here's the improved wording/description:
-
 ```markdown
 | Term   | Description                                                                                                                                                                                                                      |
 |--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -93,8 +91,6 @@ Certainly! Here's the improved wording/description:
 |        |                                                                                                                                                                                                                                  |
 |        |                                                                                                                                                                                                                                  |
 ```
-
-Let me know if you need further modifications or additional terms included.
 
 ## Contributing
 
