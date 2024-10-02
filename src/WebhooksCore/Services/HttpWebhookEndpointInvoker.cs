@@ -4,11 +4,10 @@ using Polly.Extensions.Http;
 
 namespace WebhooksCore.Services;
 
-public class HttpWebhookEndpointInvoker(IHttpClientFactory httpClientFactory, ISystemClock systemClock) : IWebhookEndpointInvoker
+public class HttpWebhookEndpointInvoker(HttpClient httpClient, ISystemClock systemClock) : IWebhookEndpointInvoker
 {
     public async Task InvokeAsync(WebhookSink webhookSink, NewWebhookEvent newWebhookEvent, CancellationToken cancellationToken = default)
     {
-        var httpClient = httpClientFactory.CreateClient();
         var retryPolicy = GetRetryPolicy();
         var webhookEvent = new WebhookEvent(newWebhookEvent.EventType, newWebhookEvent.Payload, systemClock.UtcNow);
 

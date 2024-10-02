@@ -12,7 +12,7 @@ namespace WebhooksCore;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddWebhooksCore(this IServiceCollection services)
+    public static IServiceCollection AddWebhooksCore(this IServiceCollection services, Action<IHttpClientBuilder>? configureHttpClient = null)
     {
         TypeDescriptor.AddAttributes(typeof(Type), new TypeConverterAttribute(typeof(TypeTypeConverter)));
         
@@ -21,9 +21,10 @@ public static class ServiceCollectionExtensions
         services.AddOptions<BackgroundTaskProcessorOptions>();
         services.AddOptions<WebhookBroadcasterOptions>();
 
-        return services
-            .AddHttpClient()
-            .AddSingleton<IWebhookEventBroadcaster, DefaultWebhookEventBroadcaster>()
+        var httpClientBuilder = services.AddHttpClient<HttpWebhookEndpointInvoker>();
+        configureHttpClient?.Invoke(httpClientBuilder);
+        
+        return services.AddSingleton<IWebhookEventBroadcaster, DefaultWebhookEventBroadcaster>()
             .AddSingleton<IWebhookSinkProvider, OptionsWebhookSinkProvider>()
             .AddSingleton<IWebhookSourceProvider, OptionsWebhookSourceProvider>()
             .AddSingleton<IWebhookEndpointInvoker, HttpWebhookEndpointInvoker>()
