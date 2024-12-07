@@ -14,7 +14,7 @@ on:
     types: [ prereleased, published ]
 env:
   base_version: '0.0.1'
-  feedz_feed_source: 'https://f.feedz.io/personal/webhooks-core/nuget/index.json'
+  feedz_feed_source: 'https://f.feedz.io/sfmskywalker/webhooks-core/nuget/index.json'
   nuget_feed_source: 'https://api.nuget.org/v3/index.json'
 
 jobs:
